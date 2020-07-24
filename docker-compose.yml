@@ -1,0 +1,53 @@
+version: '3'
+services:
+  traefik:
+    image: traefik:v2.1
+    container_name: reverse_proxy
+    restart: always
+    networks:
+      - web
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./conf/traefik.yml:/traefik.yml:ro
+      - ./conf/middleware.yml:/middleware.yml:ro
+      - ./data/.htpasswd:/.htpasswd:ro
+      - ./data/acme.json:/acme.json
+      - ./data/traefik.log:/traefik.log
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_HOST}`)"
+      - "traefik.http.middlewares.traefik-auth.basicauth.usersfile=.htpasswd"
+      - "traefik.http.routers.traefik.middlewares=https-redirect@file"
+      - "traefik.http.routers.traefik-sec.entrypoints=https"
+      - "traefik.http.routers.traefik-sec.rule=Host(`${TRAEFIK_HOST}`)"
+      - "traefik.http.routers.traefik-sec.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-sec.tls=true"
+      - "traefik.http.routers.traefik-sec.tls.options=myTLSOptions@file"
+      - "traefik.http.routers.traefik-sec.tls.certresolver=le"
+      - "traefik.http.routers.traefik-sec.service=api@internal"
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL}
+      TRAEFIK_ERROR_LOG_LEVEL: ${TRAEFIK_ERROR_LOG_LEVEL}
+      TRAEFIK_ERROR_LOG_FILE_PATH: ${TRAEFIK_ERROR_LOG_FILE_PATH}
+      TRAEFIK_GLOBAL_CHECK_NEW_VERSION: ${TRAEFIK_GLOBAL_CHECK_NEW_VERSION}
+      TRAEFIK_GLOBAL_SEND_ANONYMOUS_USAGE: ${TRAEFIK_GLOBAL_SEND_ANONYMOUS_USAGE}
+      TRAEFIK_API_DASHBOARD: ${TRAEFIK_API_DASHBOARD}
+      TRAEFIK_API_DEBUG: ${TRAEFIK_API_DEBUG}
+      MIDDLEWARE_HEADERS_CUSTOM_FRAME_OPTIONS_VALUE: ${MIDDLEWARE_HEADERS_CUSTOM_FRAME_OPTIONS_VALUE}
+      MIDDLEWARE_HEADERS_SSL_REDIRECT: ${MIDDLEWARE_HEADERS_SSL_REDIRECT}
+      MIDDLEWARE_HEADERS_BROWSER_XSS_FILTER: ${MIDDLEWARE_HEADERS_BROWSER_XSS_FILTER}
+      MIDDLEWARE_HEADERS_CONTENT_TYPE_NO_SNIFF: ${MIDDLEWARE_HEADERS_CONTENT_TYPE_NO_SNIFF}
+      MIDDLEWARE_HEADERS_FORCE_STS_HEADER: ${MIDDLEWARE_HEADERS_FORCE_STS_HEADER}
+      MIDDLEWARE_HEADERS_STS_SECONDS: ${MIDDLEWARE_HEADERS_STS_SECONDS}
+      MIDDLEWARE_HEADERS_STS_INCLUDE_SUBDOMAINS: ${MIDDLEWARE_HEADERS_STS_INCLUDE_SUBDOMAINS}
+      MIDDLEWARE_HEADERS_STS_PRELOAD: ${MIDDLEWARE_HEADERS_STS_PRELOAD}
+      MIDDLEWARE_TLS_MIN_VERSION: ${MIDDLEWARE_TLS_MIN_VERSION}
+      MIDDLEWARE_HTTPS_REDIRECT_SCHEME: ${MIDDLEWARE_HTTPS_REDIRECT_SCHEME}
+
+networks:
+  web:
+    external: true

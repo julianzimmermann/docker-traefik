@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+.env
+data/.htpasswd
+data/traefik.log
+data/acme.json

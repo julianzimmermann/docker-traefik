@@ -1,0 +1,19 @@
+http:
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: ${MIDDLEWARE_HTTPS_REDIRECT_SCHEME}
+    default-headers:
+      headers:
+        CustomFrameOptionsValue: ${MIDDLEWARE_HEADERS_CUSTOM_FRAME_OPTIONS_VALUE}
+        sslRedirect: ${MIDDLEWARE_HEADERS_SSL_REDIRECT}
+        browserXssFilter: ${MIDDLEWARE_HEADERS_BROWSER_XSS_FILTER}
+        contentTypeNosniff: ${MIDDLEWARE_HEADERS_CONTENT_TYPE_NO_SNIFF}
+        forceSTSHeader: ${MIDDLEWARE_HEADERS_FORCE_STS_HEADER}
+        stsSeconds: ${MIDDLEWARE_HEADERS_STS_SECONDS}
+        stsIncludeSubdomains: ${MIDDLEWARE_HEADERS_STS_INCLUDE_SUBDOMAINS}
+        stsPreload: ${MIDDLEWARE_HEADERS_STS_PRELOAD}
+tls:
+  options:
+    myTLSOptions:
+       minVersion: ${MIDDLEWARE_TLS_MIN_VERSION}

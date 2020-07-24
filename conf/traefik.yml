@@ -1,0 +1,27 @@
+global:
+    checkNewVersion: ${TRAEFIK_GLOBAL_CHECK_NEW_VERSION}
+    sendAnonymousUsage: ${TRAEFIK_GLOBAL_SEND_ANONYMOUS_USAGE}
+api:
+  dashboard: ${TRAEFIK_API_DASHBOARD}
+  debug: ${TRAEFIK_API_DEBUG}
+log:
+  level: ${TRAEFIK_ERROR_LOG_LEVEL}
+  filePath: "${TRAEFIK_ERROR_LOG_FILE_PATH}"
+entryPoints:
+  http:
+    address: "0.0.0.0:80"
+  https:
+    address: "0.0.0.0:443"
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    network: web
+    exposedByDefault: false
+  file:
+    filename: /middleware.yml
+certificatesResolvers:
+  le:
+    acme:
+      email: ${ACME_EMAIL}
+      storage: ../acme.json
+      tlsChallenge: {}
