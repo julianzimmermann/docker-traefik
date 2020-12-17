@@ -3,7 +3,7 @@
 ## Setup
 
 * rename `.env.dist` to `.env` and adjust env variables to your need
-* rename `data/acme.json.dist` to `data/acme.json`
+* rename `data/acme.json.dist` to `data/acme.json` and `chmod 600 data/acme.json`
 * rename `data/traefik.log.dist` to `data/traefik.log`
 
 ## Build

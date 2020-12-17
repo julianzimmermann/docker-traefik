@@ -1,4 +1,4 @@
-FROM traefik:v2.3   
+FROM traefik:v2.4   
 
 RUN apk update \
     && apk add apache2-utils \

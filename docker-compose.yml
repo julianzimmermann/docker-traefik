@@ -2,7 +2,7 @@ version: '3'
 services:
   traefik:
     build: .
-    container_name: reverse_proxy
+    container_name: ${PROJECT_NAME}
     restart: always
     networks:
       - web
@@ -16,17 +16,17 @@ services:
       - ./data/:/data/
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoints=http"
-      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_HOST}`)"
-      - "traefik.http.middlewares.traefik-auth.basicauth.usersfile=/data/.htpasswd"
-      - "traefik.http.routers.traefik.middlewares=https-redirect@file"
-      - "traefik.http.routers.traefik-sec.entrypoints=https"
-      - "traefik.http.routers.traefik-sec.rule=Host(`${TRAEFIK_HOST}`)"
-      - "traefik.http.routers.traefik-sec.middlewares=traefik-auth"
-      - "traefik.http.routers.traefik-sec.tls=true"
-      - "traefik.http.routers.traefik-sec.tls.options=myTLSOptions@file"
-      - "traefik.http.routers.traefik-sec.tls.certresolver=le"
-      - "traefik.http.routers.traefik-sec.service=api@internal"
+      - "traefik.http.routers.${PROJECT_NAME}.entrypoints=http"
+      - "traefik.http.routers.${PROJECT_NAME}.rule=Host(`${TRAEFIK_HOST}`)"
+      - "traefik.http.middlewares.${PROJECT_NAME}-auth.basicauth.usersfile=/data/.htpasswd"
+      - "traefik.http.routers.${PROJECT_NAME}.middlewares=https-redirect@file"
+      - "traefik.http.routers.${PROJECT_NAME}-sec.entrypoints=https"
+      - "traefik.http.routers.${PROJECT_NAME}-sec.rule=Host(`${TRAEFIK_HOST}`)"
+      - "traefik.http.routers.${PROJECT_NAME}-sec.middlewares=${PROJECT_NAME}-auth"
+      - "traefik.http.routers.${PROJECT_NAME}-sec.tls=true"
+      - "traefik.http.routers.${PROJECT_NAME}-sec.tls.options=myTLSOptions@file"
+      - "traefik.http.routers.${PROJECT_NAME}-sec.tls.certresolver=le"
+      - "traefik.http.routers.${PROJECT_NAME}-sec.service=api@internal"
     environment:
       HTACCESS_USER: ${HTACCESS_USER}
       HTACCESS_PASS: ${HTACCESS_PASS}
