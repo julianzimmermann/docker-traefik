@@ -9,11 +9,24 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 21115:21115/tcp
+      - 21116:21116/tcp
+      - 21117:21117/tcp
+      - 21118:21118/tcp
+      - 21119:21119/tcp
+      - 21116:21116/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./conf:/conf:ro
       - ./scripts:/scripts:ro
       - ./data/:/data/
+    command:
+      - --entrypoints.rd5-tcp.address=:21115/tcp
+      - --entrypoints.rd6-tcp.address=:21116/tcp
+      - --entrypoints.rd7-tcp.address=:21117/tcp
+      - --entrypoints.rd8-tcp.address=:21118/tcp
+      - --entrypoints.rd9-tcp.address=:21119/tcp
+      - --entrypoints.rd6-udp.address=:21116/udp
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${PROJECT_NAME}.entrypoints=http"
@@ -47,6 +60,18 @@ services:
       MIDDLEWARE_HEADERS_STS_PRELOAD: ${MIDDLEWARE_HEADERS_STS_PRELOAD}
       MIDDLEWARE_TLS_MIN_VERSION: ${MIDDLEWARE_TLS_MIN_VERSION}
       MIDDLEWARE_HTTPS_REDIRECT_SCHEME: ${MIDDLEWARE_HTTPS_REDIRECT_SCHEME}
+  traefik-certs-dumper:
+    image: ldez/traefik-certs-dumper:v2.7.4
+    entrypoint: sh -c '
+      apk add jq
+      ; while ! [ -e /data/acme.json ]
+      || ! [ `jq ".[] | .Certificates | length" /data/acme.json` != 0 ]; do
+      sleep 1
+      ; done
+      && traefik-certs-dumper file --version v2 --watch
+      --source /data/acme.json --dest /data/certs'
+    volumes:
+      - ./data:/data
 
 networks:
   web:
