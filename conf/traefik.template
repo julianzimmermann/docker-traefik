@@ -12,6 +12,20 @@ entryPoints:
     address: "0.0.0.0:80"
   https:
     address: "0.0.0.0:443"
+  collaborasecure:
+    address: "0.0.0.0:9980"
+  rd5-tcp:
+    address: "0.0.0.0:21115/tcp"
+  rd6-tcp:
+    address: "0.0.0.0:21116/tcp"
+  rd7-tcp:
+    address: "0.0.0.0:21117/tcp"
+  rd8-tcp:
+    address: "0.0.0.0:21118/tcp"
+  rd9-tcp:
+    address: "0.0.0.0:21119/tcp"
+  rd6-udp:
+    address: "0.0.0.0:21116/udp"
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"

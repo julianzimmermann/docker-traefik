@@ -9,11 +9,25 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 9980:9980
+      - 21115:21115/tcp
+      - 21116:21116/tcp
+      - 21117:21117/tcp
+      - 21118:21118/tcp
+      - 21119:21119/tcp
+      - 21116:21116/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./conf:/conf:ro
       - ./scripts:/scripts:ro
       - ./data/:/data/
+    command:
+      - --entrypoints.rd5-tcp.address=:21115/tcp
+      - --entrypoints.rd6-tcp.address=:21116/tcp
+      - --entrypoints.rd7-tcp.address=:21117/tcp
+      - --entrypoints.rd8-tcp.address=:21118/tcp
+      - --entrypoints.rd9-tcp.address=:21119/tcp
+      - --entrypoints.rd6-udp.address=:21116/udp
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${PROJECT_NAME}.entrypoints=http"
